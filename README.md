@@ -19,17 +19,20 @@ Una aplicación moderna y responsive para gestionar tus gastos personales, desar
 ## 🛠️ Stack Tecnológico
 
 ### **Frontend**
+
 - **React 18** + **TypeScript** - Componentes y tipado estático
 - **Tailwind CSS 4** - Estilizado utility-first
 - **Vite** - Build tool y dev server
 - **React Swipeable List** - Gestos tipo iOS para acciones
 
 ### **Gestión de Estado**
+
 - **useReducer** - Estado complejo y predecible
 - **Context API** - Evita prop drilling
 - **Hooks personalizados** - Lógica reutilizable
 
 ## 📁 Estructura del Proyecto
+
 src/
 ├── components/
 │ ├── ExpenseForm.tsx # Formulario para agregar gastos
@@ -54,19 +57,53 @@ text
 ## 🎯 Funcionalidades Implementadas
 
 ### **Gestión de Gastos**
+
 - Agregar gastos con descripción, monto, categoría y fecha
 - Eliminar gastos con confirmación por gestos
 - Validación en tiempo real de formularios
 - Categorías predefinidas (Comida, Transporte, Ocio, etc.)
 
 ### **Estadísticas y Análisis**
+
 - Total gastado por categoría
 - Porcentaje del presupuesto utilizado
 - Gráfico visual de distribución de gastos
 - Filtrado por fechas y categorías
 
 ### **Experiencia de Usuario**
+
 - **Gestos iOS**: Swipe + tap para confirmar eliminación
 - **Responsive design**: Optimizado para móvil y desktop
 - **Feedback visual**: Estados de carga y confirmación
 - **Persistencia**: Datos guardados automáticamente
+
+## 🚀 Instalación y Uso
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/EmeTeBe/control-gastos.git
+
+# Navegar al directorio
+cd control-gastos
+
+# Instalar dependencias
+pnpm install
+
+# Ejecutar en modo desarrollo
+pnpm dev
+
+# Build para producción
+pnpm build
+
+# Preview del build
+pnpm preview
+
+🔮 Próximas Mejoras
+
+Exportación de reportes (PDF/Excel)
+
+Presupuestos por categoría
+
+Modo oscuro
+
+PWA capabilities
