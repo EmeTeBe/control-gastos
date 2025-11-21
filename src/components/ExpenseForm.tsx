@@ -1,11 +1,11 @@
 import { categories } from "../data/catagories";
 import DatePicker from "react-date-picker";
-import "react-date-picker/dist/DatePicker.css";
-import "react-calendar/dist/Calendar.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { DraftExpense, Value } from "../types";
 import ErrorMessage from "./ErrorMessage";
 import { useBudget } from "../hooks/useBudget";
+import "react-date-picker/dist/DatePicker.css";
+import "react-calendar/dist/Calendar.css";
 
 export default function ExpenseForm() {
   const [expense, setExpense] = useState<DraftExpense>({
@@ -16,7 +16,18 @@ export default function ExpenseForm() {
   });
 
   const [error, setError] = useState("");
-  const { dispatch } = useBudget();
+  const [previousAmount, setPreviousAmount] = useState(0);
+  const { dispatch, state, availableBudget } = useBudget();
+
+  useEffect(() => {
+    if (state.editingExpense) {
+      const expenseToEdit = state.expenses.filter(
+        (currentExpense) => currentExpense.id === state.editingExpense
+      )[0];
+      setExpense(expenseToEdit);
+      setPreviousAmount(expenseToEdit.amount);
+    }
+  }, [state.editingExpense, state.expenses]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -43,23 +54,36 @@ export default function ExpenseForm() {
     if (Object.values(expense).includes("")) {
       setError("Todos los campos son obligatorios");
       return;
-    } else {
-      //Agregar nuevo gasto
-      dispatch({ type: "add-expense", payload: { expense } });
-      //Reiniciar el state
-      setExpense({
-        expenseName: "",
-        amount: 0,
-        category: "",
-        date: new Date(),
-      });
     }
+    //validar que no me pase el limite del presupuesto
+    if (expense.amount - previousAmount > availableBudget) {
+      setError("El gasto excede el presupuesto disponible");
+      return;
+    }
+
+    //Agregar nuevo gasto o actualizar
+    if (state.editingExpense) {
+      dispatch({
+        type: "update-expense",
+        payload: { expense: { id: state.editingExpense, ...expense } },
+      });
+    } else {
+      dispatch({ type: "add-expense", payload: { expense } });
+    }
+    //Reiniciar el state
+    setExpense({
+      expenseName: "",
+      amount: 0,
+      category: "",
+      date: new Date(),
+    });
+    setPreviousAmount(0);
   };
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
       <legend className="uppercase text-center font-bold text-2xl border-b-4 border-blue-600 py-2">
-        Nuevo Gasto
+        {state.editingExpense ? "Editar Gasto" : "Nuevo Gasto"}
       </legend>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -124,7 +148,7 @@ export default function ExpenseForm() {
       <input
         type="submit"
         className="w-full p-2 bg-blue-600 rounded-lg uppercase text-white font-bold cursor-pointer hover:bg-blue-800"
-        value={"Registrar Gasto"}
+        value={state.editingExpense ? "Actualizar Gasto" : "Registrar Gasto"}
       />
     </form>
   );
